@@ -1,5 +1,7 @@
-dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
+#!/usr/bin/env bash
 
+# ✅ Restore MATE and terminal config from dconf backup
+dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
 
 echo "🔧 Checking Dropbox bootstrap..."
 
@@ -10,13 +12,28 @@ if [ ! -d "$HOME/.dropbox-dist" ]; then
   read -r
 else
   echo "✅ Dropbox already initialized."
+  exit 1
 fi
 
-echo "📡 Starting Dropbox service..."
-systemctl --user enable dropbox.service
-systemctl --user start dropbox.service
+echo "⚙️ Ensuring Dropbox autostarts on login..."
 
-echo "✅ Dropbox should now be running and syncing."
+AUTOSTART_DIR="$HOME/.config/autostart"
+AUTOSTART_FILE="$AUTOSTART_DIR/dropbox.desktop"
 
+mkdir -p "$AUTOSTART_DIR"
 
+cat > "$AUTOSTART_FILE" <<EOF
+[Desktop Entry]
+Type=Application
+Exec=dropbox start
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Dropbox
+Comment=Start Dropbox on login
+EOF
+
+chmod +x "$AUTOSTART_FILE"
+
+echo "✅ Dropbox autostart configured via desktop entry."
 
