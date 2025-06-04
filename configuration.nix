@@ -15,6 +15,10 @@
 
   networking.networkmanager.enable = true;
 
+  systemd.tmpfiles.rules = [
+   "d /tmp 1777 root root 20d"
+  ];
+  
   services.xserver = {
     enable = true;
     desktopManager.mate.enable = true;
@@ -51,30 +55,48 @@
     openFirewall = true;
   };
 
+
+  # ✅ inotify watches for Dropbox, browsers, etc.
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 100000;
+  };
+
   environment.systemPackages = with pkgs; [
+    libsForQt5.kolourpaint          # next block is kolourpaint specific
+    kdePackages.breeze-icons        
+    kdePackages.kconfig            
+    kdePackages.kiconthemes         
+    kdePackages.kio                 
+
+    python3
+    python3Packages.venvShellHook
+
     firefox
     google-chrome
+
     curl
     wget
+
     git
-    vim
     jq
     openssh
     xclip
     neofetch
     networkmanagerapplet
-    dropbox
     docker-compose
     virtualbox
-    libsForQt5.kolourpaint
     brasero
     wireshark
-    xsane
     lsscsi
     libappindicator-gtk3
+
+    xsane
     simple-scan
     hplip
-    mpv         # ✅ added mpv
+
+    mpv                                   # ✅ added media player
+    vim
+    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))  # ✅ gVim
   ];
 
   systemd.services.docker.enable = true;
