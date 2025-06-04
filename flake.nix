@@ -15,19 +15,14 @@
       modules = [
         ./configuration.nix
         insynch.nixosModules.default
-
-        # ✅ Home Manager system module
         home-manager.nixosModules.home-manager
 
-        # ✅ Connect external home.nix for user chris
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-
           home-manager.users.chris = import ./home/chris/home.nix;
         }
       ];
     };
   };
 }
-
