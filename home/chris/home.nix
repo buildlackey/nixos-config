@@ -21,6 +21,7 @@
 
   # Packages you want always available
   home.packages = with pkgs; [
+    dropbox
     neofetch
     htop
     xclip
