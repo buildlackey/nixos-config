@@ -64,6 +64,8 @@
     neofetch
     networkmanagerapplet
 
+    jetbrains.idea-community
+    jdk17
 
     dropbox
     mate.mate-indicator-applet
@@ -82,6 +84,10 @@
     hplip
     mpv         # ✅ added mpv
   ];
+
+
+  environment.variables.JAVA_HOME = "${pkgs.jdk17}";
+
 
   systemd.services.docker.enable = true;
 
