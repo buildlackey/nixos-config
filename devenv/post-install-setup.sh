@@ -14,7 +14,7 @@ dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
 echo "🔧 Checking Dropbox bootstrap..."
 
 if [ ! -d "$HOME/.dropbox-dist" ]; then
-  echo "📦 First-time Dropbox initialization..."
+  echo "📦 First-time Dropbox initialization... Takes about 5 minutes, then you will see OS prompt"
   dropbox start -i
   echo "✅ Dropbox GUI should prompt for login. Once done, press Enter to continue..."
   read -r

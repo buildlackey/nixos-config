@@ -63,9 +63,16 @@
     xclip
     neofetch
     networkmanagerapplet
+
+
     dropbox
+    mate.mate-indicator-applet
+    ayatana-indicator-application
+
+
     docker-compose
     virtualbox
+
     libsForQt5.kolourpaint
     brasero
     wireshark
