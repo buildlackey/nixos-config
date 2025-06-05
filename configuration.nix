@@ -67,7 +67,6 @@
 
     dropbox
     mate.mate-indicator-applet
-    ayatana-indicator-application
 
 
     docker-compose

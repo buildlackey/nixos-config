@@ -5,9 +5,9 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1748981153,
+        "lastModified": 1,
         "narHash": "sha256-7XU0y//JcgsIAOyWjEBvM8gJ0d3HLOXOV3nRkE2cOUg=",
-        "path": "/etc/nixos/flakes/insynch",
+        "path": "./flakes/insynch",
         "type": "path"
       },
       "original": {
