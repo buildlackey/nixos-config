@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-
-
+# 📁 Validate that devenv is correctly linked
 if [ ! -d "/etc/nixos/devenv" ]; then
   echo "/etc/nixos/devenv missing.  Suggestion: run the cmds below"
   echo "rm -rf /etc/nixos ; sudo ln -s ~/nixos-config /etc/nixos"
@@ -20,17 +19,14 @@ if [ ! -d "$HOME/.dropbox-dist" ]; then
   read -r
 else
   echo "✅ Dropbox already initialized."
-  exit 1
 fi
 
 echo "⚙️ Ensuring Dropbox autostarts on login..."
 
 AUTOSTART_DIR="$HOME/.config/autostart"
-AUTOSTART_FILE="$AUTOSTART_DIR/dropbox.desktop"
-
 mkdir -p "$AUTOSTART_DIR"
 
-cat > "$AUTOSTART_FILE" <<EOF
+cat > "$AUTOSTART_DIR/dropbox.desktop" <<EOF
 [Desktop Entry]
 Type=Application
 Exec=dropbox start
@@ -41,7 +37,36 @@ Name=Dropbox
 Comment=Start Dropbox on login
 EOF
 
-chmod +x "$AUTOSTART_FILE"
+chmod +x "$AUTOSTART_DIR/dropbox.desktop"
 
 echo "✅ Dropbox autostart configured via desktop entry."
+
+# 📦 First-time Insync setup
+echo "🔧 Checking Insync bootstrap..."
+
+if [ ! -d "$HOME/.config/Insync" ]; then
+  echo "📦 First-time Insync initialization..."
+  (cd $HOME ; insync start &)		# running from /etc/nixos causes issues
+  echo "✅ Insync GUI should prompt for login. Once done, press Enter to continue..."
+  read -r
+else
+  echo "✅ Insync already initialized."
+fi
+
+echo "⚙️ Ensuring Insync autostarts on login..."
+
+cat > "$AUTOSTART_DIR/insync.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Exec=insync start
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Insync
+Comment=Start Insync on login
+EOF
+
+chmod +x "$AUTOSTART_DIR/insync.desktop"
+
+echo "✅ Insync autostart configured via desktop entry."
 
