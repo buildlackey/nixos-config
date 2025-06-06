@@ -64,12 +64,8 @@
     neofetch
     networkmanagerapplet
 
-    jetbrains.idea-community
-    jdk17
-
     dropbox
     mate.mate-indicator-applet
-
 
     docker-compose
     virtualbox
@@ -82,12 +78,8 @@
     libappindicator-gtk3
     simple-scan
     hplip
-    mpv         # ✅ added mpv
+    mpv
   ];
-
-
-  environment.variables.JAVA_HOME = "${pkgs.jdk17}";
-
 
   systemd.services.docker.enable = true;
 
