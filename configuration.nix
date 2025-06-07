@@ -52,6 +52,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    temurin-bin-17    
+
     firefox
     google-chrome
     curl
@@ -82,6 +84,10 @@
     hplip
     mpv         # ✅ added mpv
   ];
+
+  environment.variables = {
+    JAVA_HOME = "${pkgs.temurin-bin-17}";
+  };
 
   systemd.services.docker.enable = true;
 
