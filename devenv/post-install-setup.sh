@@ -77,3 +77,50 @@ chmod +x "$AUTOSTART_DIR/insync.desktop"
 
 echo "✅ Insync autostart configured via desktop entry."
 
+
+cd $HOME
+
+## Git config
+git config --global core.excludesfile ~/Dropbox/projects/devEnv/config/.gitignore
+git config --global user.name "chris"
+git config --global user.email "chris@buildlackey.com"
+ln -s  ~/Dropbox/projects/devEnv/config/.gitignore  ~/.gitignore
+
+
+## ssh config
+rm -rf ~/.ssh
+ln -s ~/Dropbox/projects/devEnv/config/ssh ~/.ssh
+chmod 500  ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa*
+chmod 700 ~/.ssh
+
+
+rm -f $HOME/config
+ln -s Dropbox/projects/devEnv/config/
+
+rm -f $HOME/scripts
+ln -s Dropbox/projects/devEnv/scripts
+
+rm -f $HOME/.vimrc
+ln -s Dropbox/projects/devEnv/config/_vimrc .vimrc
+
+
+rm -f $HOME/.ideavimrc
+ln -s Dropbox/projects/devEnv/config/.ideavimrc .ideavimrc
+
+rm -rf $HOME/.vim
+ln -s Dropbox/projects/devEnv/config/vim .vim
+
+
+grep "config.bashrc"  ~/.bashrc
+if [ "$?"  -eq  "0" ] ; then
+	echo skipping bashrc config
+else
+	echo adding bashrc config
+	echo ". \$HOME/config/bashrc" >> ~/.bashrc
+fi
+
+
+
+
+
