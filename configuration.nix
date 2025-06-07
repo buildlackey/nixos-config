@@ -15,6 +15,10 @@
 
   networking.networkmanager.enable = true;
 
+  systemd.tmpfiles.rules = [
+   "d /tmp 1777 root root 20d"
+  ];
+
   services.xserver = {
     enable = true;
     desktopManager.mate.enable = true;
@@ -53,6 +57,24 @@
 
   environment.systemPackages = with pkgs; [
     temurin-bin-17    
+    jetbrains.idea-community
+	
+    zip
+    unzip
+
+    gnome.nautilus
+
+    libsForQt5.kolourpaint          # next block is kolourpaint specific
+    kdePackages.breeze-icons
+    kdePackages.kconfig
+    kdePackages.kiconthemes
+    kdePackages.kio
+
+    gnome.adwaita-icon-theme   # GNOME's full icon set
+    mate.mate-icon-theme       # MATE’s classic colorful icons
+
+    python3
+    python3Packages.venvShellHook
 
     firefox
     google-chrome
@@ -82,7 +104,10 @@
     libappindicator-gtk3
     simple-scan
     hplip
-    mpv         # ✅ added mpv
+
+    mpv                                   # ✅ added media player
+    vim
+    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))  # ✅ gVim
   ];
 
   environment.variables = {

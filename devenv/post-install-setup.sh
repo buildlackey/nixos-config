@@ -7,6 +7,13 @@ if [ ! -d "/etc/nixos/devenv" ]; then
   exit 1
 fi
 
+
+#  supress annoying nautilus file mgr warnings
+touch ~/.gtk-bookmarks
+mkdir -p ~/.cache/thumbnails/normal
+
+
+
 # ✅ Restore MATE and terminal config from dconf backup
 dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
 
