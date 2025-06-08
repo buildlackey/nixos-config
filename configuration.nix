@@ -56,13 +56,19 @@
   };
 
   environment.systemPackages = with pkgs; [
-    temurin-bin-17    
+    temurin-bin-17    		    # JVM stuff
     jetbrains.idea-community
 	
     zip
     unzip
 
-    gnome.nautilus
+    gnome.nautilus		    # file mgr
+
+    dejavu_fonts		    # mainly for vim
+    liberation_ttf
+    freefont_ttf
+    nerdfonts
+    ubuntu_font_family
 
     libsForQt5.kolourpaint          # next block is kolourpaint specific
     kdePackages.breeze-icons
@@ -78,10 +84,12 @@
 
     firefox
     google-chrome
+
     curl
     wget
+
     git
-    vim
+    vim-full
     jq
     openssh
     xclip
@@ -92,11 +100,9 @@
     dropbox
     mate.mate-indicator-applet
 
-
     docker-compose
     virtualbox
 
-    libsForQt5.kolourpaint
     brasero
     wireshark
     xsane
