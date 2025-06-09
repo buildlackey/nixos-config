@@ -19,9 +19,8 @@
 
   time.timeZone = "America/Los_Angeles";
 
-
   systemd.tmpfiles.rules = [
-   "d /tmp 1777 root root 20d"
+    "d /tmp 1777 root root 20d"
   ];
 
   services.xserver = {
@@ -50,6 +49,8 @@
 
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.hplip ];
+  services.printing.browsing = true;
+  services.printing.listenAddresses = [ "localhost:631" ];
 
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplip ];
@@ -59,6 +60,12 @@
     nssmdns4 = true;
     openFirewall = true;
   };
+
+  services.resolved.enable = false;  # ✅ Disable resolved to fix .local resolution
+
+  # ✅ NEW: Add NSS module and ensure shared libraries are included
+  system.nssModules = [ pkgs.nssmdns ];
+  environment.extraOutputsToInstall = [ "out" "lib" ];
 
   environment.systemPackages = with pkgs; [
     temurin-bin-17    		    # JVM stuff
@@ -75,14 +82,14 @@
     nerdfonts
     ubuntu_font_family
 
-    libsForQt5.kolourpaint          # next block is kolourpaint specific
+    libsForQt5.kolourpaint
     kdePackages.breeze-icons
     kdePackages.kconfig
     kdePackages.kiconthemes
     kdePackages.kio
 
-    gnome.adwaita-icon-theme   # GNOME's full icon set
-    mate.mate-icon-theme       # MATE’s classic colorful icons
+    gnome.adwaita-icon-theme
+    mate.mate-icon-theme
 
     python3
     python3Packages.venvShellHook
@@ -101,7 +108,6 @@
     neofetch
     networkmanagerapplet
 
-
     dropbox
     mate.mate-indicator-applet
 
@@ -116,9 +122,11 @@
     simple-scan
     hplip
 
-    mpv                                   # ✅ added media player
+    mpv
     vim
-    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))  # ✅ gVim
+    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))
+
+    nssmdns  # ✅ Ensure package is present too
   ];
 
   environment.variables = {
