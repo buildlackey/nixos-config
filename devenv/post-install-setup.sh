@@ -102,7 +102,7 @@ rm -f $HOME/scripts
 ln -s Dropbox/projects/devEnv/scripts
 
 rm -f $HOME/.vimrc
-ln -s Dropbox/projects/devEnv/config/_vimrc .vimrc
+ln -s /etc/nixos/devenv/vim.rc  .vimrc
 
 
 rm -f $HOME/.ideavimrc

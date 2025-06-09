@@ -15,6 +15,11 @@
 
   networking.networkmanager.enable = true;
 
+  boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;    # recommended for large idea projects
+
+  time.timeZone = "America/Los_Angeles";
+
+
   systemd.tmpfiles.rules = [
    "d /tmp 1777 root root 20d"
   ];
