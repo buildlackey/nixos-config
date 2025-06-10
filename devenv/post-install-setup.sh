@@ -84,6 +84,7 @@ cd $HOME
 git config --global core.excludesfile ~/Dropbox/projects/devEnv/config/.gitignore
 git config --global user.name "chris"
 git config --global user.email "chris@buildlackey.com"
+rm ~/.gitignore
 ln -s  ~/Dropbox/projects/devEnv/config/.gitignore  ~/.gitignore
 
 
@@ -121,6 +122,7 @@ else
 fi
 
 
-
+## Password setup
+/etc/nixos/devenv/change_passwd.sh
 
 
