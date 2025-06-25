@@ -14,8 +14,15 @@ mkdir -p ~/.cache/thumbnails/normal
 
 
 
-# ✅ Restore MATE and terminal config from dconf backup
+# ✅ Restore MATE panel, terminal, etc config from dconf backup
 dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
+dconf load /org/mate/panel/ < /etc/nixos/devenv/mate-panel-dconf-backup.ini
+
+
+# ✅ Restore sound settings
+amixer set Master unmute
+amixer set Master 80%
+
 
 echo "🔧 Checking Dropbox bootstrap..."
 

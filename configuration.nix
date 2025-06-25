@@ -15,7 +15,7 @@
 
   networking.networkmanager.enable = true;
 
-  boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;    # recommended for large idea projects
+  boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;
 
   time.timeZone = "America/Los_Angeles";
 
@@ -61,22 +61,68 @@
     openFirewall = true;
   };
 
-  services.resolved.enable = false;  # ✅ Disable resolved to fix .local resolution
+  services.resolved.enable = false;
 
-  # ✅ NEW: Add NSS module and ensure shared libraries are included
+  # ✅ NSS config for .local resolution
   system.nssModules = [ pkgs.nssmdns ];
   environment.extraOutputsToInstall = [ "out" "lib" ];
 
+  # ✅ PipeWire + PulseAudio compatibility
+  sound.enable = true;
+
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  # ✅ ALSA softvol config to limit volume to safe levels
+  environment.etc."asound.conf".text = ''
+    pcm.!default {
+        type plug
+        slave.pcm "softvol"
+    }
+
+    pcm.softvol {
+        type softvol
+        slave {
+            pcm "hw:0"
+        }
+        control {
+            name "Master"
+            card 0
+        }
+        max_dB -10.0
+    }
+  '';
+
+  services.udev.packages = [
+    (pkgs.writeTextFile {
+      name = "trezor-udev-rules";
+      destination = "/etc/udev/rules.d/51-trezor.rules";
+      text = builtins.readFile (pkgs.fetchurl {
+        url = "https://data.trezor.io/udev/51-trezor.rules";
+        sha256 = "0vlxif89nsqpbnbz1vwfgpl1zayzmq87gw1snskn0qns6x2rpczk";
+      });
+    })
+  ];
+
   environment.systemPackages = with pkgs; [
-    temurin-bin-17    		    # JVM stuff
+    alsa-utils
+
+    temurin-bin-17
     jetbrains.idea-community
-	
+
     zip
     unzip
 
-    gnome.nautilus		    # file mgr
+    gnome.nautilus
 
-    dejavu_fonts		    # mainly for vim
+    dejavu_fonts
     liberation_ttf
     freefont_ttf
     nerdfonts
@@ -126,7 +172,7 @@
     vim
     (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))
 
-    nssmdns  # ✅ Ensure package is present too
+    nssmdns
   ];
 
   environment.variables = {
