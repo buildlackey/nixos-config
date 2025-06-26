@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib,  ... }:
 
 {
   imports = [
@@ -179,7 +179,13 @@
     JAVA_HOME = "${pkgs.temurin-bin-17}";
   };
 
-  systemd.services.docker.enable = true;
+  systemd.services."systemd-tmpfiles-clean".startAt = "daily";
+
+  services.journald = {
+    storage = "volatile";
+    rateLimitInterval = "30s";
+    rateLimitBurst = 1000;
+  };
 
   system.stateVersion = "24.05";
 }
