@@ -134,3 +134,5 @@ map <F2> :echo "Font 12"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 10<CR>
 map <F3> :echo "Font 20"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 18<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Disable the matchparen plugin entirely
+let g:loaded_matchparen = 1  " Disable auto-highlighting/jumping
