@@ -88,10 +88,9 @@ echo "✅ Insync autostart configured via desktop entry."
 cd $HOME
 
 ## Git config
-git config --global core.excludesfile ~/Dropbox/projects/devEnv/config/.gitignore
-git config --global user.name "chris"
-git config --global user.email "chris@buildlackey.com"
-rm ~/.gitignore
+cp /etc/nixos/devenv/git.config ~/.gitconfig   
+cp /etc/nixos/devenv/git.ignore ~/.gitignore
+
 ln -s  ~/Dropbox/projects/devEnv/config/.gitignore  ~/.gitignore
 
 
