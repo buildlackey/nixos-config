@@ -112,6 +112,9 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    gh          # github client tools
+    nodejs      # needed for clasp
+
     alsa-utils
 
     temurin-bin-17
@@ -174,6 +177,18 @@
 
     nssmdns
   ];
+
+
+    systemd.services.clasp-global-install = {
+      description = "Install clasp globally via npm";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.nodejs}/bin/npm install -g @google/clasp";
+      };
+    };
+
+
 
   environment.variables = {
     JAVA_HOME = "${pkgs.temurin-bin-17}";
