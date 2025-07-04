@@ -111,9 +111,17 @@
     })
   ];
 
+
+
+  programs.bash.interactiveShellInit = ''
+    eval "$(direnv hook bash)"
+  '';
+
   environment.systemPackages = with pkgs; [
     gh          # github client tools
     nodejs      # needed for clasp
+
+    direnv
 
     alsa-utils
 
@@ -178,15 +186,6 @@
     nssmdns
   ];
 
-
-    systemd.services.clasp-global-install = {
-      description = "Install clasp globally via npm";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.nodejs}/bin/npm install -g @google/clasp";
-      };
-    };
 
 
 
