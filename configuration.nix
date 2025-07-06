@@ -187,7 +187,9 @@
   ];
 
 
-
+  environment.shellAliases = {
+    idea = "${pkgs.jetbrains.idea-community}/idea-community/bin/idea.sh";
+  };
 
   environment.variables = {
     JAVA_HOME = "${pkgs.temurin-bin-17}";

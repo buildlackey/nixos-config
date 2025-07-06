@@ -68,11 +68,12 @@ function! ToggleLineNumbers()
     let g:toggle_numbers = 0
     echo "Line numbers OFF"
   else
-    set number relativenumber
+    set number norelativenumber
     let g:toggle_numbers = 1
     echo "Line numbers ON"
   endif
 endfunction
+
 
 " Map to <leader>tn (e.g., ,tn)
 nnoremap <leader>tn :call ToggleLineNumbers()<CR>
