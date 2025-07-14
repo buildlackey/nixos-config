@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib,  ... }:
 
 {
   imports = [
@@ -15,10 +15,14 @@
 
   networking.networkmanager.enable = true;
 
+  boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;
+
+  time.timeZone = "America/Los_Angeles";
+
   systemd.tmpfiles.rules = [
-   "d /tmp 1777 root root 20d"
+    "d /tmp 1777 root root 20d"
   ];
-  
+
   services.xserver = {
     enable = true;
     desktopManager.mate.enable = true;
@@ -45,28 +49,104 @@
 
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.hplip ];
+  services.printing.browsing = true;
+  services.printing.listenAddresses = [ "localhost:631" ];
 
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplip ];
 
   services.avahi = {
     enable = true;
-    nssmdns = true;
+    nssmdns4 = true;
     openFirewall = true;
   };
 
+  services.resolved.enable = false;
 
-  # ✅ inotify watches for Dropbox, browsers, etc.
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 100000;
+  # ✅ NSS config for .local resolution
+  system.nssModules = [ pkgs.nssmdns ];
+  environment.extraOutputsToInstall = [ "out" "lib" ];
+
+  # ✅ PipeWire + PulseAudio compatibility
+  sound.enable = true;
+
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
   };
 
+  # ✅ ALSA softvol config to limit volume to safe levels
+  environment.etc."asound.conf".text = ''
+    pcm.!default {
+        type plug
+        slave.pcm "softvol"
+    }
+
+    pcm.softvol {
+        type softvol
+        slave {
+            pcm "hw:0"
+        }
+        control {
+            name "Master"
+            card 0
+        }
+        max_dB -10.0
+    }
+  '';
+
+  services.udev.packages = [
+    (pkgs.writeTextFile {
+      name = "trezor-udev-rules";
+      destination = "/etc/udev/rules.d/51-trezor.rules";
+      text = builtins.readFile (pkgs.fetchurl {
+        url = "https://data.trezor.io/udev/51-trezor.rules";
+        sha256 = "0vlxif89nsqpbnbz1vwfgpl1zayzmq87gw1snskn0qns6x2rpczk";
+      });
+    })
+  ];
+
+
+
+  programs.bash.interactiveShellInit = ''
+    eval "$(direnv hook bash)"
+  '';
+
   environment.systemPackages = with pkgs; [
-    libsForQt5.kolourpaint          # next block is kolourpaint specific
-    kdePackages.breeze-icons        
-    kdePackages.kconfig            
-    kdePackages.kiconthemes         
-    kdePackages.kio                 
+    gh          # github client tools
+    nodejs      # needed for clasp
+
+    direnv
+
+    alsa-utils
+
+    temurin-bin-17
+    jetbrains.idea-community
+
+    zip
+    unzip
+
+    gnome.nautilus
+
+    dejavu_fonts
+    liberation_ttf
+    freefont_ttf
+    nerdfonts
+    ubuntu_font_family
+
+    libsForQt5.kolourpaint
+    kdePackages.breeze-icons
+    kdePackages.kconfig
+    kdePackages.kiconthemes
+    kdePackages.kio
+
+    gnome.adwaita-icon-theme
+    mate.mate-icon-theme
 
     python3
     python3Packages.venvShellHook
@@ -78,13 +158,19 @@
     wget
 
     git
+    vim-full
     jq
     openssh
     xclip
     neofetch
     networkmanagerapplet
+
+    dropbox
+    mate.mate-indicator-applet
+
     docker-compose
     virtualbox
+
     brasero
     wireshark
     lsscsi
@@ -94,12 +180,29 @@
     simple-scan
     hplip
 
-    mpv                                   # ✅ added media player
+    mpv
     vim
-    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))  # ✅ gVim
+    (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))
+
+    nssmdns
   ];
 
-  systemd.services.docker.enable = true;
+
+  environment.shellAliases = {
+    idea = "${pkgs.jetbrains.idea-community}/idea-community/bin/idea.sh";
+  };
+
+  environment.variables = {
+    JAVA_HOME = "${pkgs.temurin-bin-17}";
+  };
+
+  systemd.services."systemd-tmpfiles-clean".startAt = "daily";
+
+  services.journald = {
+    storage = "volatile";
+    rateLimitInterval = "30s";
+    rateLimitBurst = 1000;
+  };
 
   system.stateVersion = "24.05";
 }
