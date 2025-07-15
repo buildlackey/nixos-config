@@ -122,6 +122,7 @@
     nodejs      # needed for clasp
 
     direnv
+    tree
 
     alsa-utils
 
@@ -173,9 +174,10 @@
 
     brasero
     wireshark
-    xsane
     lsscsi
     libappindicator-gtk3
+
+    xsane
     simple-scan
     hplip
 
