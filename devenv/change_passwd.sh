@@ -2,8 +2,7 @@
 # Run as root to set password for 'chris' post-rebuild
 
 USERNAME="chris"
-PASSWORD_FILE="/etc/nixos/secrets/chris-password"
-
+PASSWORD_FILE="/home/$USERNAME/.config/chris-password"
 
 # Check if password file exists
 if [ ! -f "$PASSWORD_FILE" ]; then

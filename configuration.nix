@@ -122,6 +122,7 @@
     nodejs      # needed for clasp
 
     direnv
+    tree
 
     alsa-utils
 
