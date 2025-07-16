@@ -121,6 +121,8 @@
     gh          # github client tools
     nodejs      # needed for clasp
 
+    yt-dlp      # generic video downloader
+
     direnv
     tree
 
