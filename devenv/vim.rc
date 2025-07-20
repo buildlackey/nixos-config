@@ -1,6 +1,6 @@
 set nocompatible
 set visualbell
-colorscheme industry
+colorscheme ron
 set clipboard=unnamedplus
 
 
