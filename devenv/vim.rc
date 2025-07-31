@@ -80,6 +80,30 @@ nnoremap <leader>tn :call ToggleLineNumbers()<CR>
 
 
 
+" 🛣️ Toggle path display in command line with <leader>tp
+"      First press: shows full path
+"      Second press: clears message
+"
+" Requires: let mapleader = "-" to match your pattern (-tp)
+let g:path_shown = 0
+
+function! TogglePath()
+  if g:path_shown
+    echo ""                      
+    let g:path_shown = 0
+  else
+    echo expand('%:p')           
+    let g:path_shown = 1
+  endif
+endfunction
+
+nnoremap <leader>tp :call TogglePath()<CR>
+
+
+
+
+
+
  
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
