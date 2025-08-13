@@ -1,4 +1,3 @@
-set nocompatible
 set visualbell
 colorscheme ron
 set clipboard=unnamedplus
@@ -16,21 +15,37 @@ set backupdir=/tmp
 set dir=/tmp
 
 
-"  define '-' as compound multi-key cmd start key
+" :doc  define '-' as compound multi-key cmd start key
 let mapleader = "-"
 
 
+" :doc  -pa  to inject a visual mode (^B) selected block into current cursor with replacement
+vnoremap <leader>p "_dP
 
-" :doc  ^V to enter block editing mode
+" :doc  map ^A to  Select All (like Windows Ctrl+A)
+nnoremap <C-A> ggVG
+inoremap <C-A> <Esc>ggVG
+vnoremap <C-A> <Esc>ggVG
+
+" :doc  map ^C to  Copy to System Clipboard (Ctrl+C)
+vnoremap <C-C> "+y
+inoremap <C-C> <Esc>"+y
+nnoremap <C-C> "+Y
 
 
-" :doc  Remap -ww to "force write file " 
-nnoremap <leader>ww :w!<CR>
+" :doc  ^p to paste like windows ^V
+" Normal mode: Paste after cursor (like Windows Ctrl+V)
+nnoremap <C-P> "+p
+" Visual mode: Replace selection with clipboard content
+vnoremap <C-P> "_d"+P
+" Insert mode: Paste at cursor position
+inoremap <C-P> <C-R>+
+" Disable default command-line history completion for Ctrl+P
+cnoremap <C-P> <Nop>
+   
 
-" :doc  Remap -wq to "force write file and quit" 
-nnoremap <leader>wq :wq!<CR>
 
-
+   
 
 " :doc  Remap ^Z to suspend editor session
 :map <C-Z> :sus<CR>
@@ -85,22 +100,32 @@ nnoremap <leader>tn :call ToggleLineNumbers()<CR>
 "      Second press: clears message
 "
 " Requires: let mapleader = "-" to match your pattern (-tp)
+"
+" :doc  -tp  to toggle display path of currently edited file in status area on bottom of screen
+"
 let g:path_shown = 0
 
 function! TogglePath()
+  let filepath = expand('%:p') " Get full path
+  
+  " Copy to system clipboard
+  if system('uname') =~? 'Darwin' " macOS
+    call system('pbcopy', filepath)
+  else " Assume Linux with xclip
+    call system('xclip -selection clipboard', filepath)
+  endif
+  
+  " Toggle display message
   if g:path_shown
-    echo ""                      
+    echo ""
     let g:path_shown = 0
   else
-    echo expand('%:p')           
+    echo "📋 Copied to clipboard: " . filepath
     let g:path_shown = 1
   endif
 endfunction
 
 nnoremap <leader>tp :call TogglePath()<CR>
-
-
-
 
 
 
@@ -125,8 +150,7 @@ au! Syntax scala source ~/.vim/syntax/scala.vim
 
 
 
-
-" remap F7 to "create an <a href='url'>content</a> where url sits below content"
+" :doc remap F7 to "create an <a href='url'>content</a> where url sits below content"
 map <F7> <ESC>0i<a href="<ESC>A"><ESC>JxA</a>
 
 
@@ -159,5 +183,5 @@ map <F2> :echo "Font 12"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 10<CR>
 map <F3> :echo "Font 20"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 18<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Disable the matchparen plugin entirely
+" Disable the matchparen plugin ntirely ?  this seems to keep it, that's OK. leave alone for now
 let g:loaded_matchparen = 1  " Disable auto-highlighting/jumping
