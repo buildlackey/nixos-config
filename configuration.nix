@@ -125,6 +125,7 @@
 
     direnv
     tree
+    xclip
 
     alsa-utils
 
