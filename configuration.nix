@@ -67,6 +67,8 @@
   system.nssModules = [ pkgs.nssmdns ];
   environment.extraOutputsToInstall = [ "out" "lib" ];
 
+
+  #####################  AUDIO & SPEECH TO TEXT ################
   # ✅ PipeWire + PulseAudio compatibility
   sound.enable = true;
 
@@ -100,6 +102,9 @@
     }
   '';
 
+  #####################  AUDIO & SPEECH TO TEXT (end) ################
+
+
   services.udev.packages = [
     (pkgs.writeTextFile {
       name = "trezor-udev-rules";
@@ -110,8 +115,6 @@
       });
     })
   ];
-
-
 
   programs.bash.interactiveShellInit = ''
     eval "$(direnv hook bash)"
@@ -189,8 +192,15 @@
     (vim_configurable.overrideAttrs (old: { gui = "gtk"; }))
 
     nssmdns
-  ];
 
+    # >>> nerd-dictation (speech2text) deps >>>
+    gcc                # ensures libstdc++ is available
+    stdenv.cc.cc.lib   # libgcc_s/libc runtime
+    pulseaudio         # pactl / CLI tools
+    sox                # mic testing & capture
+    xdotool            # type into X
+    # <<< end >>>
+  ];
 
   environment.shellAliases = {
     idea = "${pkgs.jetbrains.idea-community}/idea-community/bin/idea.sh";
@@ -198,6 +208,11 @@
 
   environment.variables = {
     JAVA_HOME = "${pkgs.temurin-bin-17}";
+    # Combine SANE's default with the C++ runtime libs; force wins the conflict.
+    # This preserves scanners (/etc/sane-libs) and gives Vosk/nerd-dictation 
+    # libstdc++ & friends, without nix-shell.
+    #
+    LD_LIBRARY_PATH = lib.mkForce "/etc/sane-libs:${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.gcc.cc.lib}/lib";
   };
 
   systemd.services."systemd-tmpfiles-clean".startAt = "daily";
@@ -208,6 +223,25 @@
     rateLimitBurst = 1000;
   };
 
+  ################################
+  # User service: warm Vosk model once after login (low priority)
+  ################################
+
+  systemd.user.services.talk-warmup = {
+    description = "Warm Vosk/nerd-dictation model cache once after login";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      Nice = 19;
+      IOSchedulingClass = "idle";
+      ExecStart = "${pkgs.bash}/bin/bash -lc '/home/chris/scripts/DEVENV/talk begin --timeout=1 --full-sentence --numbers-as-digits'";
+      WorkingDirectory = "/home/chris";
+
+    };
+  };
+
+
   system.stateVersion = "24.05";
 }
+
 
