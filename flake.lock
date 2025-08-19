@@ -22,13 +22,13 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-7XU0y//JcgsIAOyWjEBvM8gJ0d3HLOXOV3nRkE2cOUg=",
-        "path": "./flakes/insynch",
+        "lastModified": 1752522811,
+        "narHash": "sha256-f7ERdeAxM1vXXtB5aE7wb6WIVsg78n/Ydw1lBzi4rX4=",
+        "path": "/home/chris/nixos-config/flakes/insynch",
         "type": "path"
       },
       "original": {
-        "path": "./flakes/insynch",
+        "path": "/home/chris/nixos-config/flakes/insynch",
         "type": "path"
       }
     },
