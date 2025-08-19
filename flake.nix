@@ -6,14 +6,22 @@
     insynch.url = "path:/home/chris/nixos-config/flakes/insynch";
   };
 
-  outputs = { self, nixpkgs, home-manager, insynch, ... }: {
+  outputs = { self, nixpkgs, insynch, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 
       modules = [
         ./configuration.nix
         insynch.nixosModules.default
+
+        # Add Flatpak support - required to run sandboxed images like idea
+        {
+          services.flatpak.enable = true;
+          xdg.portal.enable = true; # recommended for desktop integration
+          # RECOMMENDED>xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        }
       ];
     };
   };
 }
+

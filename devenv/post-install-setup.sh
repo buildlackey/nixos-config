@@ -8,6 +8,16 @@ if [ ! -d "/etc/nixos/devenv" ]; then
 fi
 
 
+# Install flatpak for intellij Idea ultimate - replaces communit edition we 
+# Installed via nixos package manager
+echo ">>> Ensuring Flathub remote is added..."
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+echo ">>> Installing IntelliJ IDEA Ultimate (Flatpak)..."
+flatpak install -y flathub com.jetbrains.IntelliJ-IDEA-Ultimate
+echo ">>> Flatpak list check:"
+flatpak list | grep IntelliJ || echo "⚠️ WARNING IntelliJ not found"
+
+
 #  supress annoying nautilus file mgr warnings
 touch ~/.gtk-bookmarks
 mkdir -p ~/.cache/thumbnails/normal
