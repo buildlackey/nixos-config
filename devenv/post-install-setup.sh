@@ -8,8 +8,11 @@ if [ ! -d "/etc/nixos/devenv" ]; then
 fi
 
 
-# Install flatpak for intellij Idea ultimate - replaces communit edition we 
-# Installed via nixos package manager
+# Install flatpak for intellij Idea ultimate - replaces community edition we 
+# Installed via nixos package manager..   The flakpak install method avoids .so library
+# sharing which nixos makes tricky due to non-standard paths.  But it duplicates .so libs that
+# otherwise would be shared...  That's the price we have to pay to run idea though.
+#
 echo ">>> Ensuring Flathub remote is added..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 echo ">>> Installing IntelliJ IDEA Ultimate (Flatpak)..."
