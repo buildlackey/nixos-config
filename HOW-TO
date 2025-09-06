@@ -42,6 +42,8 @@ sudo mkfs.vfat -F 32 -n EFI_SSD "${DISK}p1"
 sudo mkfs.ext4 -L nixos-ssd "${DISK}p2"
 
 # Mount with label-based device paths
+
+sudo mkdir -p /mnt
 sudo mount /dev/disk/by-label/nixos-ssd /mnt
 sudo mkdir -p /mnt/boot
 sudo mount /dev/disk/by-label/EFI_SSD /mnt/boot
