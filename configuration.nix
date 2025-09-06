@@ -126,6 +126,8 @@
 
     yt-dlp      # generic video downloader
 
+    graphviz    # plant uml support, etc
+
     direnv
     tree
     xclip
@@ -175,7 +177,6 @@
     mate.mate-indicator-applet
 
     docker-compose
-    virtualbox
 
     brasero
     wireshark

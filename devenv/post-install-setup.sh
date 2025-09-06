@@ -7,35 +7,31 @@ if [ ! -d "/etc/nixos/devenv" ]; then
   exit 1
 fi
 
-
 # Install flatpak for intellij Idea ultimate - replaces community edition we 
 # Installed via nixos package manager..   The flakpak install method avoids .so library
 # sharing which nixos makes tricky due to non-standard paths.  But it duplicates .so libs that
 # otherwise would be shared...  That's the price we have to pay to run idea though.
 #
-echo ">>> Ensuring Flathub remote is added..."
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-echo ">>> Installing IntelliJ IDEA Ultimate (Flatpak)..."
-flatpak install -y flathub com.jetbrains.IntelliJ-IDEA-Ultimate
-echo ">>> Flatpak list check:"
-flatpak list | grep IntelliJ || echo "⚠️ WARNING IntelliJ not found"
+echo ">>> Ensuring Flathub remote is added for user chris..."
+sudo -u chris flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
+echo ">>> Installing IntelliJ IDEA Ultimate (Flatpak, user chris)..."
+sudo -u chris flatpak install -y --user flathub com.jetbrains.IntelliJ-IDEA-Ultimate
+
+echo ">>> Flatpak list check (user chris):"
+sudo -u chris flatpak list --user | grep IntelliJ || echo "⚠️ WARNING IntelliJ not found for user chris"
 
 #  supress annoying nautilus file mgr warnings
 touch ~/.gtk-bookmarks
 mkdir -p ~/.cache/thumbnails/normal
 
-
-
 # ✅ Restore MATE panel, terminal, etc config from dconf backup
 dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
 dconf load /org/mate/panel/ < /etc/nixos/devenv/mate-panel-dconf-backup.ini
 
-
 # ✅ Restore sound settings
 amixer set Master unmute
 amixer set Master 80%
-
 
 echo "🔧 Checking Dropbox bootstrap..."
 
@@ -143,5 +139,4 @@ fi
 
 ## Password setup
 /etc/nixos/devenv/change_passwd.sh
-
 
