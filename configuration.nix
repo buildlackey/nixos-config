@@ -39,7 +39,8 @@
     isNormalUser = true;
     group = "chris";
     extraGroups = [ "wheel" "networkmanager" "docker" "vboxusers" "lp" "scanner" ];
-    initialHashedPassword = builtins.readFile ./secrets/chris-password;
+    initialHashedPassword = lib.removeSuffix "\n" (builtins.readFile ./secrets/chris-password);
+
   };
 
   security.sudo = {
