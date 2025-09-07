@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    insynch.url = "path:/home/chris/nixos-config/flakes/insynch";
+    insynch.url = "path:./flakes/insynch";
   };
 
   outputs = { self, nixpkgs, insynch, ... }: {

@@ -1,7 +1,12 @@
-1) To perform set up of new laptop first do:
+/mnt/etc/nixos/hardware-configuration.nix1) To perform set up of new laptop first do:
      PARTITION FORMATTING (see below)
 2) Then run:
     sudo nixos-generate-config --root /mnt
+            can ignore>> ERROR: not a btrfs filesystem: /mnt/boot
+                as long as you see:
+                    writing /mnt/etc/nixos/hardware-configuration.nix...
+                    writing /mnt/etc/nixos/configuration.nix...
+
 3) And then edit config file resulting from prior step:
     /mnt/etc/nixos/hardware-configuration.nix 
     Add:
