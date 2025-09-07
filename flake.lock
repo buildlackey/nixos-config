@@ -5,13 +5,13 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1752522811,
+        "lastModified": 1,
         "narHash": "sha256-f7ERdeAxM1vXXtB5aE7wb6WIVsg78n/Ydw1lBzi4rX4=",
-        "path": "/home/chris/nixos-config/flakes/insynch",
+        "path": "./flakes/insynch",
         "type": "path"
       },
       "original": {
-        "path": "/home/chris/nixos-config/flakes/insynch",
+        "path": "./flakes/insynch",
         "type": "path"
       }
     },

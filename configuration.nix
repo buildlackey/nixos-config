@@ -39,7 +39,7 @@
     isNormalUser = true;
     group = "chris";
     extraGroups = [ "wheel" "networkmanager" "docker" "vboxusers" "lp" "scanner" ];
-    password = "changeme";
+    initialHashedPassword = builtins.readFile ./secrets/chris-password;
   };
 
   security.sudo = {
