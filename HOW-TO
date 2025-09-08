@@ -22,6 +22,9 @@
             };
 4) Follow Secure note for setup of .ssh key for git repo, then pull nixos-config project
 
+5) need to fill in how to nixos-install (?)
+
+6) Post-install steps
 
 
 
