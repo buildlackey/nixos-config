@@ -106,24 +106,16 @@
   #####################  AUDIO & SPEECH TO TEXT (end) ################
 
 
-  services.udev.packages = [
-    (pkgs.writeTextFile {
-      name = "trezor-udev-rules";
-      destination = "/etc/udev/rules.d/51-trezor.rules";
-      text = builtins.readFile (pkgs.fetchurl {
-        url = "https://data.trezor.io/udev/51-trezor.rules";
-        sha256 = "0vlxif89nsqpbnbz1vwfgpl1zayzmq87gw1snskn0qns6x2rpczk";
-      });
-    })
-  ];
-
   programs.bash.interactiveShellInit = ''
     eval "$(direnv hook bash)"
   '';
 
   environment.systemPackages = with pkgs; [
     gh          # github client tools
-    nodejs      # needed for clasp
+
+    nodejs                  # needed for GAS development  -- clasp .. gcloud etc
+    google-cloud-sdk
+
 
     yt-dlp      # generic video downloader
 
@@ -241,5 +233,4 @@
 
   system.stateVersion = "24.05";
 }
-
 

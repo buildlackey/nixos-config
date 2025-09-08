@@ -7,8 +7,19 @@ if [ ! -d "/etc/nixos/devenv" ]; then
   exit 1
 fi
 
-# Install flatpak for intellij Idea ultimate - replaces community edition we 
-# Installed via nixos package manager..   The flakpak install method avoids .so library
+# ✅ Check for SSH key
+if [ ! -f "$HOME/.ssh/id_rsa" ]; then
+  echo "❗ ssh key setup required. use nixos setup notes"
+  echo "Press Enter after creating your SSH key to continue..."
+  read -r
+  if [ ! -f "$HOME/.ssh/id_rsa" ]; then
+    echo "❌ id_rsa still missing; aborting."
+    exit 1
+  fi
+fi
+
+
+# Install flatpak for intellij Idea ultimate.  This install method avoids .so library
 # sharing which nixos makes tricky due to non-standard paths.  But it duplicates .so libs that
 # otherwise would be shared...  That's the price we have to pay to run idea though.
 #
@@ -87,7 +98,6 @@ echo "✅ Dropbox autostart configured via desktop entry."
 
 
 
-
 # ✅ Wait for Dropbox to finish syncing required files
 REQUIRED_FILES=(
     $HOME/Dropbox/projects/devEnv/scripts
@@ -144,9 +154,6 @@ echo "✅ Insync autostart configured via desktop entry."
 
 cd $HOME
 
-## Git config
-cp /etc/nixos/devenv/git.config ~/.gitconfig   
-cp /etc/nixos/devenv/git.ignore ~/.gitignore
 
 GIT_IGNORE=$HOME/Dropbox/projects/devEnv/config/.gitignore  
 if  [ ! -e "$GIT_IGNORE" ]  ; then 
