@@ -4,6 +4,8 @@
 USERNAME="chris"
 PASSWORD_FILE="/home/$USERNAME/.config/chris-password"
 
+sudo chown -R  chris:chris /home/chris/.config/
+
 # Check if password file exists
 if [ ! -f "$PASSWORD_FILE" ]; then
     echo "Error: Password file $PASSWORD_FILE not found!"

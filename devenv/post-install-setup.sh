@@ -12,14 +12,9 @@ fi
 # sharing which nixos makes tricky due to non-standard paths.  But it duplicates .so libs that
 # otherwise would be shared...  That's the price we have to pay to run idea though.
 #
-echo ">>> Ensuring Flathub remote is added for user chris..."
-sudo -u chris flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
-
-echo ">>> Installing IntelliJ IDEA Ultimate (Flatpak, user chris)..."
-sudo -u chris flatpak install -y --user flathub com.jetbrains.IntelliJ-IDEA-Ultimate
-
-echo ">>> Flatpak list check (user chris):"
-sudo -u chris flatpak list --user | grep IntelliJ || echo "⚠️ WARNING IntelliJ not found for user chris"
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install -y --user flathub com.jetbrains.IntelliJ-IDEA-Ultimate
+flatpak list --user | grep IntelliJ || echo "⚠️ WARNING IntelliJ not found for user chris"
 
 #  supress annoying nautilus file mgr warnings
 touch ~/.gtk-bookmarks
@@ -30,19 +25,45 @@ dconf load / < /etc/nixos/devenv/mate-dconf-backup.ini
 dconf load /org/mate/panel/ < /etc/nixos/devenv/mate-panel-dconf-backup.ini
 
 # ✅ Restore sound settings
-amixer set Master unmute
-amixer set Master 80%
+sudo amixer set Master unmute
+sudo amixer set Master 80%
 
 echo "🔧 Checking Dropbox bootstrap..."
 
 if [ ! -d "$HOME/.dropbox-dist" ]; then
   echo "📦 First-time Dropbox initialization... Takes about 5 minutes, then you will see OS prompt"
+  cd /home/chris                    #   ensures Dropbox sets up its files under ~/.dropbox-dist and ~/Dropbox
   dropbox start -i
   echo "✅ Dropbox GUI should prompt for login. Once done, press Enter to continue..."
   read -r
 else
   echo "✅ Dropbox already initialized."
+  if ! pgrep -f ".dropbox-dist/.*/dropbox" >/dev/null 2>&1; then
+    echo "🚀 Starting Dropbox daemon..."
+    dropbox start
+  else
+    echo "⏭️  Dropbox daemon already running, skipping start."
+  fi
+
 fi
+
+# Verify Dropbox actually started
+for i in {1..12}; do   # wait up to 60s
+    if pgrep -f ".dropbox-dist/.*/dropbox" >/dev/null 2>&1 && [ -S "$HOME/.dropbox/command_socket" ]; then
+        echo "✅ Dropbox daemon is running and socket is ready."
+        break
+    else
+        echo "… waiting for Dropbox daemon to come up ($i/12)"
+        sleep 5
+    fi
+done
+
+if ! pgrep -f ".dropbox-dist/.*/dropbox" >/dev/null 2>&1 || [ ! -S "$HOME/.dropbox/command_socket" ]; then
+    echo "❌ Dropbox failed to start, aborting setup."
+    exit 1
+fi
+
+
 
 echo "⚙️ Ensuring Dropbox autostarts on login..."
 
@@ -64,6 +85,32 @@ chmod +x "$AUTOSTART_DIR/dropbox.desktop"
 
 echo "✅ Dropbox autostart configured via desktop entry."
 
+
+
+
+# ✅ Wait for Dropbox to finish syncing required files
+REQUIRED_FILES=(
+    $HOME/Dropbox/projects/devEnv/scripts
+    $HOME/Dropbox/projects/devEnv/config/.ideavimrc 
+    $HOME/Dropbox/projects/devEnv/config/vim 
+    $HOME//Dropbox/projects/devEnv/config/ssh 
+)
+
+echo "⏳ Waiting for Dropbox to sync required files..."
+for f in "${REQUIRED_FILES[@]}"; do
+  until [ -f "$f" -o  -d "$f"  ]; do
+    echo "… still waiting for $f"
+    sleep 5
+  done
+  echo "✓ Found $f"
+done
+
+echo "🎯 Dropbox milestone reached — safe to continue."
+
+
+
+
+
 # 📦 First-time Insync setup
 echo "🔧 Checking Insync bootstrap..."
 
@@ -79,6 +126,7 @@ fi
 echo "⚙️ Ensuring Insync autostarts on login..."
 
 cat > "$AUTOSTART_DIR/insync.desktop" <<EOF
+
 [Desktop Entry]
 Type=Application
 Exec=insync start
@@ -100,12 +148,21 @@ cd $HOME
 cp /etc/nixos/devenv/git.config ~/.gitconfig   
 cp /etc/nixos/devenv/git.ignore ~/.gitignore
 
-ln -s  ~/Dropbox/projects/devEnv/config/.gitignore  ~/.gitignore
+GIT_IGNORE=$HOME/Dropbox/projects/devEnv/config/.gitignore  
+if  [ ! -e "$GIT_IGNORE" ]  ; then 
+    ln -s  ~/Dropbox/projects/devEnv/config/.gitignore  ~/.gitignore
+fi
+
+CONFIG_SYMLINK=$HOME/Dropbox/projects/devEnv/config/
+if  [ ! -e "$CONFIG_SYMLINK" ]  ; then 
+    ln -s $CONFIG_SYMLINK
+fi
+
 
 
 ## ssh config
 rm -rf ~/.ssh
-ln -s ~/Dropbox/projects/devEnv/config/ssh ~/.ssh
+ln -s $HOME/Dropbox/projects/devEnv/config/ssh ~/.ssh
 chmod 500  ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa*
 chmod 700 ~/.ssh
@@ -119,6 +176,8 @@ ln -s Dropbox/projects/devEnv/scripts
 
 rm -f $HOME/.vimrc
 ln -s /etc/nixos/devenv/vim.rc  .vimrc
+
+
 
 
 rm -f $HOME/.ideavimrc
