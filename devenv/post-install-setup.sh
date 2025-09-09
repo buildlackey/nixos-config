@@ -152,6 +152,30 @@ chmod +x "$AUTOSTART_DIR/insync.desktop"
 echo "✅ Insync autostart configured via desktop entry."
 
 
+# 📦 Trezor Suite setup
+echo "🔧 Checking Trezor Suite..."
+
+TREZOR_DIR="$HOME/.local/share/trezor-suite"
+TREZOR_APP="$TREZOR_DIR/Trezor-Suite-25.8.2-linux-x86_64.AppImage"
+
+mkdir -p "$TREZOR_DIR"
+if [ ! -f "$TREZOR_APP" ]; then
+  echo "📥 Downloading Trezor Suite AppImage..."
+  wget -q https://data.trezor.io/suite/releases/desktop/latest/Trezor-Suite-25.8.2-linux-x86_64.AppImage -O "$TREZOR_APP"
+  chmod +x "$TREZOR_APP"
+else
+  echo "✅ Trezor Suite AppImage already present."
+fi
+
+# Ensure alias is present
+if ! grep -q "alias trez=" "$HOME/.bashrc"; then
+  echo "alias trez='pushd /home/chris ; nix-shell -p appimage-run --run \"appimage-run $TREZOR_APP\" ; popd'" >> "$HOME/.bashrc"
+  echo "✅ Added trez alias to ~/.bashrc"
+else
+  echo "⏭️  trez alias already configured in ~/.bashrc"
+fi
+
+
 cd $HOME
 
 
