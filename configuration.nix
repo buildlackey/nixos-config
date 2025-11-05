@@ -48,10 +48,31 @@
     wheelNeedsPassword = false;
   };
 
-  services.printing.enable = true;
-  services.printing.drivers = [ pkgs.hplip ];
-  services.printing.browsing = true;
-  services.printing.listenAddresses = [ "localhost:631" ];
+
+
+services.printing = {
+  enable = true;
+  drivers = [ pkgs.hplip ];
+  browsing = false;
+  listenAddresses = [ "localhost:631" ];
+
+  # Static printer definition written directly to cupsd.conf
+  extraConf = ''
+    <Printer HP6960>
+      Info HP OfficeJet Pro 6960
+      DeviceURI ipp://192.168.1.66/ipp/print
+      Model everywhere
+      State Idle
+      Accepting Yes
+      Shared No
+    </Printer>
+  '';
+};
+
+# And make sure cups-browsed stays off
+systemd.services.cups-browsed.enable = false;
+
+
 
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplip ];

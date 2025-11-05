@@ -179,8 +179,8 @@ map <F7> <ESC>0i<a href="<ESC>A"><ESC>JxA</a>
 set guifont=DejaVu\ Sans\ Mono\ Book\ 10
 "  doc:  zoom in,  zoom back out w/ F2/F3
 "
-map <F2> :echo "Font 12"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 10<CR>
-map <F3> :echo "Font 20"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 18<CR>
+map <F2> :echo "Font 7"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 7<CR>
+map <F3> :echo "Font 12"<CR>:set guifont=DejaVu\ Sans\ Mono\ Book\ 12<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Disable the matchparen plugin ntirely ?  this seems to keep it, that's OK. leave alone for now
